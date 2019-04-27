@@ -1,49 +1,86 @@
 import sqlite3
+
 class Database:
-    #self._conn =sqlite3.connect('./test.db')는 사용 위치에 주의해야한다.
+
     def __init__(self):
-        self._conn =sqlite3.connect('sqlit.db')#공유 되는 지점이다.
-#아래 패턴이 그냥 써줌
-    def create(self): #table
-        sql="""
-            CREATE TABLE IF NOT EXIST Persons ( #IF NOT EXIST추가됨
-                personid varchar(10) primarykey;
-                password varchar(10)
+        self._conn = sqlite3.connect('sqlite.db')
+
+    def create(self):
+        sql = """
+            CREATE TABLE IF NOT EXISTS Persons (
+                userid varchar(10) primary key,
+                password varchar(10),
                 name varchar(10),
                 phone varchar(15),
                 address varchar(10),
-                regdate date defaul:current_timetamp
-);
+                regdate date default current_timestamp 
+            );
         """
-        print('쿼리체크:{}'.format(sql))
+        print('쿼리 체크: {} '.format(sql))
         self._conn.execute(sql)
-        self._conn.commit()         #self._conn.execute(sql)  self._conn.commit()같이 다님
+        self._conn.commit()
 
-    def insert_one(self):
-        pass
-    def insert_many(self0):
-        data=[("lee","1","이순신",'010-1234-5678','사당'),
-              ("hong,"1","홍길동",'010-1234-4123','강남'),
-              ("lee","1","강강처ㅏㄴ",'010-1234-7744','분산')]#데이타는 싸인다
+    def insert_one(self,userid, password, name, phone, address):
+
         sql = """
-            INSERT INTO Persons(
-            personid, password, name, phone, address)
-            VALUES(
-            ?, ?, ?,?,?);
- """
-        self._conn.executemany(sql,data)
-        self._conn.commit( )
-    def fetch_one(self):
-        pass
-    def fetch_many(self):
-                pass
-    def count_all(self):
-        pass
+                   INSERT INTO Persons (
+                   userid, password, name, phone, address)
+                    VALUES (
+                    ?, ?, ?, ?, ?); 
+                """
+        self._conn.execute(sql,userid, password, name, phone, address)
+        self._conn.commit()
 
-    def update(self):
-        pass
-    def remove(self):
-        pass
+    def insert_many(self):
+        data = [('lee', '1', '이순신', '010-1234-5678','사당'),
+                ('hong', '1', '홍길동','010-2345-4121','강남'),
+                ('Kang', '1', '강감찬','010-5555-6666','부산')]
+        sql = """
+           INSERT INTO Persons (
+           userid, password, name, phone, address)
+            VALUES (
+            ?, ?, ?, ?, ?); 
+        """
+        self._conn.executemany(sql, data)
+        self._conn.commit()
+
+    def fetch_one(self, userid) -> object:
+        sql = """
+                    SELECT * FROM Persons WHERE userid LIKE ?;
+                """
+        cursor = self._conn.execute(sql, userid)
+        row = cursor.fetchone()
+        return row
 
 
+    def fetch_all(self) -> object:
+        sql = """
+            SELECT * FROM Persons;
+        """
+        cursor = self._conn.execute(sql)
+        rows = cursor.fetchall()
+        return rows
 
+    def count_all(self) -> object:
+        sql = """
+                   SELECT COUNT(*) FROM Persons;
+               """
+        cursor = self._conn.execute(sql)
+        row = cursor.fetchone()
+        return row
+
+    def update(self, userid, password):
+        sql = """
+            UPDATE Persons
+            SET password = ?
+            WHERE userid = ?;
+        """
+        self._conn.execute(sql, password, userid)
+        self._conn.commit()
+
+    def remove(self, userid):
+        sql = """
+            DELETE FROM Persons WHERE userid=? ;
+        """
+        self._conn.execute(sql, userid)
+        self._conn.commit()
