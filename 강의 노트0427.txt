@@ -1,0 +1,22 @@
+주식 차트는 시간 차이 있어야 한다.
+mvc:the model ,View and the Controller.(앞글자)
+Controller는 model만드는데 사용됨
+
+View차트:보여주는것
+
+수집 --모델---지도--태스트
+
+만드는 순서: mvc
+
+--------------
+맴버 변수 vs 지역변수
+맴버메소드
+
+oop get/set:a함수있고 b함수있음 같다쓰는 용도
+바꾼 값을 이어서 사용하느데 쓰임
+
+@getter 먼서 사용됨@property
+#학습 싸이트
+http://blog.naver.com/PostView.nhn?blogId=pjt3591oo&logNo=220841834172&parentCategoryNo=&categoryNo=111&viewDate=&isShowPopularPosts=false&from=postView
+
+hook는 순서 정해주는것이다
